@@ -1,14 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom'; 
-import myVideo from '../assets/4069480-uhd_3840_2160_25fps.mp4';
 
 // ================= ICONS =================
-const VideoIcon = (props) => (
-    <svg {...props} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-        <path d="M18 10.42V4H6v6.42l4.56 4.56a2 2 0 0 0 2.88 0L18 10.42ZM15 7h2v2h-2V7ZM7 7h2v2H7V7Z" />
-        <path d="M21 3H3a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h18a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1Zm-1 17H4V4h16Z" />
-    </svg>
-);
 
 const RoomIcon = (props) => (
     <svg {...props} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
@@ -171,45 +164,7 @@ const ExclusiveOffers = () => {
                         </div>
                     </div>
 
-                    {/* ========== 3. Video Gallery Section ========== */}
-                    <div className='mt-12'>
-                        <div className='flex justify-between items-center mb-4'>
-                            <h3 className='text-2xl font-bold text-gray-800 flex items-center'>
-                                <VideoIcon className="w-6 h-6 mr-2 text-[#8458B3]" />
-                                Video Highlights
-                            </h3>
-                            <Link to="/videos" className='text-[#8458B3] font-semibold hover:text-[#a277d3] transition-colors flex items-center'>
-                                Watch More Videos &rarr;
-                            </Link>
-                        </div>
-
-                        <Link
-                            to="/videos"
-                            className='block p-3 rounded-xl shadow-xl transition-shadow duration-300 hover:shadow-2xl bg-white text-[#2c0850] cursor-pointer'
-                        >
-                            <div className='flex flex-col md:flex-row justify-between items-start md:items-center gap-4'>
-                                <div className='flex-1'>
-                                    <h4 className='text-4xl font-bold mb-4'>Explore the Visuals</h4>
-                                    <div className="mt-4 inline-block bg-[#8458b3] bg-opacity-90 text-white px-5 py-2 rounded-xl font-semibold shadow-lg text-sm sm:text-base">
-                                        🌟 Click to open the video gallery page. 🌟
-                                    </div>
-                                    <p className='text-lg text-[#8555b8] opacity-80 mt-4'>
-                                        It's an invitation to immerse yourself in the atmosphere. See the moments of stillness and the luxury that awaits your stay.
-                                    </p>
-                                </div>
-
-                                <div className='rounded-2xl overflow-hidden w-full md:w-1/2'>
-                                    <video
-                                        src={myVideo}
-                                        controls
-                                        muted
-                                        loop
-                                        className='w-full h-full object-cover rounded-2xl'
-                                    />
-                                </div>
-                            </div>
-                        </Link>
-                    </div>
+                  
                 </div>
             </section>
         </>
