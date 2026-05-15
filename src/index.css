@@ -1,0 +1,21 @@
+/* Google Fonts import must be at top */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
+
+/*tailwind directves*/
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Global font */
+* {
+    font-family: "Outfit", sans-serif;
+}
+
+/* CSS variables */
+:root {
+    --color-primary: #003dfc;
+    --color-secondary: #fbbf24;
+    --color-heading: #152c5b;
+    --color-paragraph: #b0b0b0;
+}
+
