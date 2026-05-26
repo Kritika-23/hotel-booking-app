@@ -231,6 +231,7 @@ import React, {
   useContext,
   useState,
 } from "react";
+import { flushSync } from "react-dom";
 
 import {
   Mail,
@@ -363,30 +364,30 @@ const Login = ({ defaultState }) => {
           return;
         }
 
-       const currentUser = data.user;
+        const currentUser = data.user;
 
-// save globally
-setUser(currentUser);
+        flushSync(() => {
+          setUser(currentUser);
+        });
 
-console.log("LOGIN ROLE:", currentUser.role);
+        console.log("LOGIN ROLE:", currentUser.role);
 
-// navigate directly using backend response
-if (currentUser.role === "admin") {
+        if (currentUser.role === "admin") {
 
-  toast.success("Admin login successful");
+          toast.success("Admin login successful");
 
-  navigate("/admin", {
-    replace: true,
-  });
+          navigate("/admin", {
+            replace: true,
+          });
 
-} else {
+        } else {
 
-  toast.success("Login successful");
+          toast.success("Login successful");
 
-  navigate("/", {
-    replace: true,
-  });
-}
+          navigate("/", {
+            replace: true,
+          });
+        }
         window.scrollTo(0, 0);
 
       } else {

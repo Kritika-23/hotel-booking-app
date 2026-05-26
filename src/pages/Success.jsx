@@ -12,6 +12,7 @@ const Success = () => {
     const verifyPayment = async () => {
       try {
         const bookingId = searchParams.get("bookingId");
+        const sessionId = searchParams.get("session_id");
 
         if (!bookingId) {
           console.log("No bookingId found in URL");
@@ -26,7 +27,7 @@ const Success = () => {
 
         const { data } = await axios.post(
           `${API_BASE_URL}/api/payment/verify-payment`,
-          { bookingId }
+          { bookingId, sessionId }
         );
 
         
