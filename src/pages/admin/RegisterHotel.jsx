@@ -36,24 +36,21 @@ const RegisterHotel = () => {
       toast.error("Please select at least one image");
       return;
     }
- {
-  
-  return;
-}
+
     const formData = new FormData();
     formData.append("hotelName", data.hotelName);
     formData.append("hotelAddress", data.hotelAddress);
     formData.append("city", data.city);
     formData.append("rating", Number(data.rating));
-    formData.append("price", Number(data.price));
-   formData.append(
-  "amenities",
-  JSON.stringify(
-    data.amenities
-      .split(",")
-      .map(item => item.trim())
-  )
-);
+    formData.append(
+      "amenities",
+      JSON.stringify(
+        data.amenities
+          .split(",")
+          .map((item) => item.trim())
+          .filter(Boolean)
+      )
+    );
  
 
     // Append multiple images
@@ -62,31 +59,37 @@ const RegisterHotel = () => {
     });
 
     try {
-       const token = await getToken({
-  template: "backend",
-});
+      const token = await getToken({
+        template: "backend",
+      });
 
-const { data } = await axios.post(
-  "/api/hotel/register",
-  formData,
-  {
-    headers: {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "multipart/form-data",
-    },
-  }
-);
-if (data.success) {
+      if (!token) {
+        toast.error("Authentication failed");
+        return;
+      }
 
-  toast.success(data.message);
+      const { data } = await axios.post(
+        "/api/hotel/register",
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
 
-  navigate("/admin");
+      if (data.success) {
 
-} else {
+        toast.success(data.message);
 
-  toast.error(data.message);
+        navigate("/admin");
 
-} 
+      } else {
+
+        toast.error(data.message);
+
+      }
     } catch (error) {
       console.error(error.response?.data || error.message);
       toast.error(error.response?.data?.message || "Something went wrong");
