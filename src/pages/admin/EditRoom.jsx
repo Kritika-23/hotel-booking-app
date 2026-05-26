@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { AppContext } from "../../context/AppContext";
 import { toast } from "react-hot-toast";
 import { useAuth } from "@clerk/clerk-react";
+import { getImageUrl } from "../../utils/getImageUrl";
 
 const EditRoom = () => {
   const { id } = useParams();
@@ -162,7 +163,7 @@ const fileInputRef = React.useRef({});
                     src={
                       newImages[index]
                         ? URL.createObjectURL(newImages[index])
-                        : `http://localhost:4000${img}`
+                        : getImageUrl(img)
                     }
                     className="w-full h-28 object-cover rounded-2xl border shadow cursor-pointer"
                   />

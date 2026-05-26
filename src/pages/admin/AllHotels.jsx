@@ -3,6 +3,7 @@ import { AppContext } from "../../context/AppContext";
 import { useAuth } from "@clerk/clerk-react";
 import { toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import { getImageUrl } from "../../utils/getImageUrl";
 
 import {
   Home,
@@ -108,7 +109,7 @@ Manage your hotel listings with ease
           <div className="relative overflow-hidden">
 
             <img
-              src={`http://localhost:4000${hotel.images[0]}`}
+              src={getImageUrl(hotel.images[0])}
               className="h-56 w-full object-cover group-hover:scale-105 transition duration-500"
             />
 

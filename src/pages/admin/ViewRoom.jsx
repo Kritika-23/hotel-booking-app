@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { AppContext } from "../../context/AppContext";
 import { toast } from "react-hot-toast";
 import { useAuth } from "@clerk/clerk-react";
+import { getImageUrl } from "../../utils/getImageUrl";
 import {
   BedDouble,
   IndianRupee,
@@ -102,7 +103,7 @@ const ViewRoom = () => {
   {room.images?.map((img, index) => (
     <img
       key={index}
-      src={`http://localhost:4000${img}`}
+      src={getImageUrl(img)}
       alt="room"
       className="h-28 w-full object-cover rounded-xl"
     />

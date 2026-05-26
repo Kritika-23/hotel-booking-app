@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import HotelCard from "../components/HotelCard";
+import { API_BASE_URL } from "../utils/apiBase";
 
 const SearchResults = () => {
   const [hotels, setHotels] = useState([]);
@@ -24,7 +25,7 @@ const SearchResults = () => {
       try {
 
         const res = await fetch(
-          `http://localhost:4000/api/hotel/search?destination=${destination}`
+          `${API_BASE_URL}/api/hotel/search?destination=${destination}`
         );
 
         const data = await res.json();
@@ -42,7 +43,7 @@ const SearchResults = () => {
               try {
 
                 const roomRes = await fetch(
-                  `http://localhost:4000/api/rooms/by-hotel/${hotel._id}`
+                  `${API_BASE_URL}/api/rooms/by-hotel/${hotel._id}`
                 );
 
                 const roomData = await roomRes.json();

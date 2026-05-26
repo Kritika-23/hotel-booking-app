@@ -23,6 +23,7 @@ import { toast } from "react-hot-toast";
 import { useAuth } from "@clerk/clerk-react";
 
 import { normalizeAmenities, getAmenityIcon } from "../../utils/amenities";
+import { getImageUrl } from "../../utils/getImageUrl";
 const ViewHotel = () => {
 
   const { id } = useParams();
@@ -180,7 +181,7 @@ const ViewHotel = () => {
 
   {/* MAIN IMAGE */}
   <img
-    src={`http://localhost:4000${hotel.images?.[currentImage]}`}
+    src={getImageUrl(hotel.images?.[currentImage])}
     alt=""
     className="w-full h-[450px] object-cover transition-all duration-300"
   />

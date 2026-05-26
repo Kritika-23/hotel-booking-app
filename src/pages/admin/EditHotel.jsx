@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 
 import { useRef } from "react";
+import { getImageUrl } from "../../utils/getImageUrl";
 
 const EditHotel = () => {
 
@@ -88,7 +89,7 @@ const EditHotel = () => {
           setPreviews(
             hotel.images.map(
               (img) =>
-                `http://localhost:4000${img}`
+                getImageUrl(img)
             )
           );
         }

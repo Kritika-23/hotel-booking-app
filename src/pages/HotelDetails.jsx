@@ -1,11 +1,11 @@
 import { useEffect, useState, useContext, useRef } from "react";
 import { useParams, Link } from "react-router-dom";
-import axios from "axios";
 import { CheckCircle, MapPin, Star } from "lucide-react";
 import { AppContext } from "../context/AppContext"; 
 import RoomCard from '../components/RoomCard'; 
 import Button from "../components/Button";
 import { normalizeAmenities } from "../utils/amenities";
+import { getImageUrl } from "../utils/getImageUrl";
 import {
   Wifi,
   Car,
@@ -72,7 +72,7 @@ const getAmenityIcon = (amenity) => {
 const HotelDetails = () => {
   const roomsRef = useRef(null);
   const { id } = useParams();
-  const { navigate } = useContext(AppContext); 
+  const { navigate, axios } = useContext(AppContext); 
   const [hotel, setHotel] = useState(null);
   const [rooms, setRooms] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -82,13 +82,13 @@ const [activeIndex, setActiveIndex] = useState(0);
   useEffect(() => {
     const fetchHotelAndRooms = async () => {
       try {
-        const hotelRes = await axios.get(`http://localhost:4000/api/hotel/${id}`);
+        const hotelRes = await axios.get(`/api/hotel/${id}`);
         console.log(hotelRes.data);
 
       
         setHotel(hotelRes.data.hotel);
 
-        const roomRes = await axios.get(`http://localhost:4000/api/rooms/by-hotel/${id}`);
+        const roomRes = await axios.get(`/api/rooms/by-hotel/${id}`);
           
 
         if (roomRes.data.success) setRooms(roomRes.data.rooms);
@@ -142,7 +142,7 @@ return (
     <div
       className="absolute inset-0 bg-cover bg-center blur-3xl scale-125"
       style={{
-        backgroundImage: `url(http://localhost:4000${hotel?.images?.[0] || "/placeholder.jpg"})`
+        backgroundImage: `url(${getImageUrl(hotel?.images?.[0])})`
         
       }}
     />
@@ -175,7 +175,7 @@ return (
     {hotel?.images?.map((img, index) => (
       <SwiperSlide key={index}>
         <img
-          src={`http://localhost:4000${img}`}
+          src={getImageUrl(img)}
           className="w-full h-[450px] object-cover"
           onClick={() => {
     setActiveIndex(index);
@@ -357,7 +357,7 @@ return (
 
     {/* IMAGE */}
     <img
-      src={`http://localhost:4000${hotel.images[activeIndex]}`}
+      src={getImageUrl(hotel.images[activeIndex])}
       className="max-h-[85vh] max-w-[90vw] object-contain rounded-xl shadow-2xl"
     />
 
@@ -378,7 +378,7 @@ return (
       {hotel?.images?.map((img, i) => (
         <img
           key={i}
-          src={`http://localhost:4000${img}`}
+          src={getImageUrl(img)}
           onClick={() => setActiveIndex(i)}
           className={`w-20 h-14 object-cover rounded-md cursor-pointer border-2 ${
             i === activeIndex ? "border-white" : "border-transparent"

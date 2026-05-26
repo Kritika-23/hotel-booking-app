@@ -313,7 +313,8 @@ import { useAuth } from "@clerk/clerk-react";
 
 // ✅ Axios Setup
 axios.defaults.withCredentials = true;
-axios.defaults.baseURL = import.meta.env.VITE_SERVER_URL;
+axios.defaults.baseURL =
+  import.meta.env.VITE_SERVER_URL || "http://localhost:4000";
 
 // ✅ Create Context
 export const AppContext = createContext();

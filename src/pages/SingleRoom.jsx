@@ -27,6 +27,7 @@ import { useAuth } from "@clerk/clerk-react";
 import { Navigation, Pagination, Autoplay, EffectFade } from "swiper/modules";
 
 import { normalizeAmenities } from "../utils/amenities";
+import { getImageUrl } from "../utils/getImageUrl";
 
 import "swiper/css";
 import "swiper/css/navigation";
@@ -78,7 +79,7 @@ const SingleRoom = () => {
         
         // 2️⃣ Fetch full room data from backend if not found
         const { data } = await axios.get(
-          `http://localhost:4000/api/rooms/single/${id}`,
+          `/api/rooms/single/${id}`,
         );
 
         if (data.success && data.room) {
@@ -404,7 +405,7 @@ const onSubmitHandler = async (e) => {
       {room.images?.map((img, index) => (
         <SwiperSlide key={index}>
           <img
-            src={`http://localhost:4000${img}`}
+            src={getImageUrl(img)}
             className="w-full h-[500px] object-cover"
           />
         </SwiperSlide>
@@ -429,7 +430,7 @@ const onSubmitHandler = async (e) => {
     {room.images?.map((img, index) => (
       <img
         key={index}
-        src={`http://localhost:4000${img}`}
+        src={getImageUrl(img)}
         onClick={() => setSelectedImage(index)}
         className={`w-48 h-24 object-cover rounded-xl cursor-pointer border-2 transition
           ${

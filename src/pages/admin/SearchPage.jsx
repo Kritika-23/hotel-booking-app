@@ -2,6 +2,7 @@ import React, { useEffect, useState, useContext } from "react";
 import { useLocation } from "react-router-dom";
 import { AppContext } from "../../context/AppContext";
 import { useNavigate } from "react-router-dom";
+import { getImageUrl } from "../../utils/getImageUrl";
 const SearchPage = () => {
 
   const navigate = useNavigate();
@@ -120,7 +121,7 @@ return (
           <div className="relative overflow-hidden">
 
             <img
-              src={`http://localhost:4000${hotel.images?.[0]}`}
+              src={getImageUrl(hotel.images?.[0])}
               alt={hotel.hotelName}
               className="w-full h-60 object-cover group-hover:scale-105 transition duration-500"
             />

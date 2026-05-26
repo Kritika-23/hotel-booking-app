@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { CheckCircle } from "lucide-react";
 import axios from "axios";
+import { API_BASE_URL } from "../utils/apiBase";
 
 const Success = () => {
   const [searchParams] = useSearchParams();
@@ -24,7 +25,7 @@ const Success = () => {
         console.log("Verifying payment for booking:", bookingId);
 
         const { data } = await axios.post(
-          "http://localhost:4000/api/payment/verify-payment",
+          `${API_BASE_URL}/api/payment/verify-payment`,
           { bookingId }
         );
 

@@ -21,7 +21,8 @@ import {
   ShieldCheck,
 } from "lucide-react";
 
-import { normalizeAmenities, getAmenityIcon } from "../../utils/amenities";
+import { getAmenityIcon } from "../../utils/amenities";
+import { getImageUrl } from "../../utils/getImageUrl";
 
 const AdminHotelDetails = () => {
   const { getToken } = useAuth();
@@ -170,7 +171,7 @@ const deleteRoom = async (roomId) => {
     <img
       src={
         hotel?.images?.[currentImage]
-          ? `http://localhost:4000${hotel.images[currentImage]}`
+          ? getImageUrl(hotel.images[currentImage])
           : "/placeholder.jpg"
       }
       alt={hotel?.hotelName}
@@ -467,7 +468,7 @@ const deleteRoom = async (roomId) => {
           <div className="relative overflow-hidden">
 
             <img
-              src={`http://localhost:4000${room.images?.[0]}`}
+              src={getImageUrl(room.images?.[0])}
               alt={room.roomType}
               className="w-full h-56 object-cover group-hover:scale-105 transition duration-500"
             />

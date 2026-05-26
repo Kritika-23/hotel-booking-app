@@ -3,6 +3,7 @@ import { MapPin, Calendar, Users, CheckCircle, Clock, XCircle, Building2, BedDou
 import { toast } from "react-hot-toast";
 import { AppContext } from "../../context/AppContext.jsx";
 import { useAuth } from "@clerk/clerk-react";
+import { getImageUrl } from "../../utils/getImageUrl";
 
 const Bookings = () => {
   const { axios } = useContext(AppContext);
@@ -221,7 +222,7 @@ return (
                     <div className="relative overflow-hidden rounded-[24px]">
 
                       <img
-                        src={`http://localhost:4000${booking.room?.images?.[0]}`}
+                        src={getImageUrl(booking.room?.images?.[0])}
                         alt={booking.room?.roomType}
                         className="w-full h-60 object-cover group-hover:scale-105 transition duration-700"
                       />

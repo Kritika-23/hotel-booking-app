@@ -6,6 +6,7 @@ import { AppContext } from "../context/AppContext.jsx";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import { motion, AnimatePresence } from "framer-motion";
+import { getImageUrl } from "../utils/getImageUrl";
 
 import { X, MapPin, Users, Calendar } from "lucide-react";
 
@@ -80,7 +81,7 @@ const MyBooking = () => {
   const handlePayment = async (booking) => {
     try {
       const response = await axios.post(
-        "http://localhost:4000/api/payment/create-checkout-session",
+        "/api/payment/create-checkout-session",
         {
           roomName: booking.room?.roomType,
           price: booking.totalPrice,
@@ -386,7 +387,7 @@ const MyBooking = () => {
                   {booking.hotel?.images?.[0] && (
                     <div className="mt-6">
                       <img
-                        src={`http://localhost:4000${booking.hotel.images[0]}`}
+                        src={getImageUrl(booking.hotel.images[0])}
                         alt="hotel"
                         crossOrigin="anonymous"
                         className="w-full h-64 object-cover rounded-3xl"

@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { Star } from "lucide-react";
 import { normalizeAmenities } from "../utils/amenities";
+import { getImageUrl } from "../utils/getImageUrl";
 
 const HotelCard = ({
   item,
@@ -33,7 +34,7 @@ const HotelCard = ({
         <div className="relative overflow-hidden">
 
           <img
-            src={`http://localhost:4000${item.images?.[0]}`}
+            src={getImageUrl(item.images?.[0])}
             alt={item.hotelName}
             className="w-full h-64 object-cover group-hover:scale-105 transition duration-500"
           />

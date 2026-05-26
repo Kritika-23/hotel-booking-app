@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { toast } from "react-hot-toast";
 import { Star } from 'lucide-react';
 import { useAuth } from "@clerk/clerk-react";
+import { getImageUrl } from "../../utils/getImageUrl";
 import {
   Wifi,
   Car,
@@ -212,7 +213,7 @@ const { data } = await axios.delete(
                      <img
   src={
     room?.images?.length
-      ? `http://localhost:4000${room.images[0]}`
+      ? getImageUrl(room.images[0])
       : "/placeholder.jpg"
   }
   alt="room"

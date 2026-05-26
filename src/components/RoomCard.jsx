@@ -2,6 +2,7 @@ import React, { useContext, useState } from "react";
 import { motion } from "framer-motion";
 import { AppContext } from "../context/AppContext";
 import { Star, Heart, ChevronLeft, ChevronRight } from "lucide-react";
+import { getImageUrl } from "../utils/getImageUrl";
 
 const RoomCard = ({ room }) => {
   const { navigate } = useContext(AppContext);
@@ -10,7 +11,7 @@ const RoomCard = ({ room }) => {
 
   const images =
     room?.images?.length > 0
-      ? room.images.map((img) => `http://localhost:4000${img}`)
+      ? room.images.map((img) => getImageUrl(img))
       : ["/placeholder.jpg"];
 
   const nextImage = (e) => {
