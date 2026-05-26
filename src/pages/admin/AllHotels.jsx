@@ -70,7 +70,7 @@ const AllHotels = () => {
   <div className="min-h-screen bg-[#f4f1f8] p-6">
 
     {/* HEADER */}
-    <div className="relative overflow-hidden rounded-[30px] bg-gradient-to-r from-[#8458B3] via-[#9b6dd1] to-[#FF4D6D] p-8 shadow-2xl mb-8">
+    <div className="relative overflow-hidden rounded-[30px] bg-gradient-to-r from-[#9d6cc7] via-[#d7c1f0] to-[#9d6cc7] p-8 shadow-2xl mb-8">
 
       {/* BLUR EFFECTS */}
       <div className="absolute top-0 right-0 w-72 h-72 bg-white/20 rounded-full blur-3xl"></div>
@@ -84,23 +84,12 @@ const AllHotels = () => {
           </h1>
 
           <p className="text-white/80 mt-2 text-lg">
-            Manage your hotel listings beautifully
+         
+Manage your hotel listings with ease
           </p>
         </div>
 
-        {/* SEARCH */}
-        <div className="backdrop-blur-xl bg-white/20 border border-white/30 rounded-2xl px-5 py-3 flex items-center gap-3 w-full md:w-[340px] shadow-lg">
-
-          <Search className="text-white" size={20} />
-
-          <input
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search hotels..."
-            className="bg-transparent placeholder:text-white/70 text-white outline-none w-full"
-          />
-
-        </div>
+       
 
       </div>
     </div>
@@ -148,7 +137,7 @@ const AllHotels = () => {
   <button
     onClick={() => navigate(`/admin/hotel/${hotel._id}`)}
 
-    className="bg-blue-600 text-white px-3 py-2 rounded-md mt-2 hover:bg-blue-700"
+    className="bg-purple-400 text-white px-3 py-2 rounded-md mt-2 hover:bg-purple-500"
   >
     Manage Hotel
   </button>
@@ -162,13 +151,13 @@ const AllHotels = () => {
 
               <div>
 
-                <p className="text-sm text-gray-400">
-                  Starting Price
-                </p>
+             <p className="text-sm text-gray-400">
+  Starting Price
+</p>
 
-                <h2 className="text-2xl font-black text-[#8458B3]">
-                  ₹{hotel.price}
-                </h2>
+<h2 className="text-2xl font-black text-green-600 ">
+  ₹{hotel.startingPrice}
+</h2>
 
               </div>
 

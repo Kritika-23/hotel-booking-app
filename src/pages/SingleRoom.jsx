@@ -26,6 +26,8 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { useAuth } from "@clerk/clerk-react";
 import { Navigation, Pagination, Autoplay, EffectFade } from "swiper/modules";
 
+import { normalizeAmenities } from "../utils/amenities";
+
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
@@ -119,46 +121,89 @@ const SingleRoom = () => {
   }
 
   // ✅ Input change handler
-  const onChangeHandler = (e) => {
-    const { name, value } = e.target;
-    setBookingData({
-      ...bookingData,
-      [name]: name === "persons" ? Number(value) : value,
-    });
-  };
+  // const onChangeHandler = (e) => {
+  //   const { name, value } = e.target;
+  //   setBookingData({
+  //     ...bookingData,
+  //     [name]: name === "persons" ? Number(value) : value,
+  //   });
+  // };
+const onChangeHandler = (e) => {
 
-  // ✅ Amenity Icon Mapping
-  const getAmenityIcon = (amenity) => {
-    const iconMap = {
-      "Ocean View": Eye,
-      "Mountain View": Mountain,
-      "City View": Building,
-      "Garden View": TreePine,
-      Balcony: Coffee,
-      "Mini Bar": Utensils,
-      "Free WiFi": Wifi,
-      "Premium WiFi": Wifi,
-      "Work Desk": Building,
-      "Concierge Service": User,
-      "Breakfast Included": Coffee,
-      Parking: Car,
-      "Smart TV": Tv,
-      "Spa Access": Bath,
-      "Pool Access": Bath,
-      Kitchen: Utensils,
-      "Living Area": Building,
-      "Private Terrace": Building,
-      "Butler Service": User,
-      Jacuzzi: Bath,
-      "Panoramic View": Eye,
-    };
-    return iconMap[amenity] || CheckCircle;
-  };
+  const { name, value } = e.target;
 
-  console.log("Room amenities:", room.amenities);
-  console.log("Hotel amenities:", room.hotel?.amenities);
+  setBookingData((prev) => ({
+    ...prev,
+    [name]:
+      name === "persons"
+        ? Number(value)
+        : value,
+  }));
 
-  console.log("room images:", room.images);
+};
+console.log(bookingData);
+ const getAmenityIcon = (amenity) => {
+
+  const key = amenity.toLowerCase();
+
+  if (key.includes("wifi"))
+    return Wifi;
+
+  if (key.includes("parking"))
+    return Car;
+
+  if (key.includes("coffee") || key.includes("breakfast"))
+    return Coffee;
+
+  if (key.includes("tv"))
+    return Tv;
+
+  if (
+    key.includes("bath") ||
+    key.includes("spa") ||
+    key.includes("jacuzzi") ||
+    key.includes("pool")
+  )
+    return Bath;
+
+  if (
+    key.includes("restaurant") ||
+    key.includes("kitchen") ||
+    key.includes("mini bar")
+  )
+    return Utensils;
+
+  if (key.includes("mountain"))
+    return Mountain;
+
+  if (
+    key.includes("view") ||
+    key.includes("ocean") ||
+    key.includes("panoramic")
+  )
+    return Eye;
+
+  if (
+    key.includes("building") ||
+    key.includes("desk") ||
+    key.includes("living") ||
+    key.includes("terrace")
+  )
+    return Building;
+
+  if (key.includes("garden"))
+    return TreePine;
+
+  if (
+    key.includes("concierge") ||
+    key.includes("butler")
+  )
+    return User;
+
+  return CheckCircle;
+};
+
+ 
 
   // ✅ Availability Check
   const checkRoomAvailability = async () => {
@@ -343,7 +388,6 @@ const onSubmitHandler = async (e) => {
   <div className="grid lg:grid-cols-3 gap-6">
 
     {/* Main Image */}
-{/* Airbnb Style Image Carousel */}
 <div className="lg:col-span-2">
   <div className="relative rounded-2xl overflow-hidden shadow-xl">
 
@@ -425,18 +469,21 @@ const onSubmitHandler = async (e) => {
   <div className="flex flex-wrap gap-3">
 
     {room.amenities &&
-      room.amenities.split(",").map((amenity, index) => {
-        const Icon = getAmenityIcon(amenity.trim());
-        return (
-          <div
-            key={index}
-            className="flex items-center gap-2 px-4 py-2 bg-purple-50 text-purple-700 rounded-full text-sm font-medium hover:bg-purple-100 transition"
-          >
-            <Icon className="w-4 h-4" />
-            {amenity.trim()}
-          </div>
-        );
-      })}
+  room.amenities.map((amenity, index) => {
+
+    const Icon = getAmenityIcon(amenity);
+
+    return (
+      <div
+        key={index}
+        className="flex items-center gap-2 px-4 py-2 bg-purple-50 text-purple-700 rounded-full text-sm font-medium hover:bg-purple-100 transition"
+      >
+        <Icon className="w-4 h-4" />
+
+        {amenity}
+      </div>
+    );
+  })}
   </div>
 </div>
 
@@ -449,18 +496,19 @@ const onSubmitHandler = async (e) => {
 
   <div className="flex flex-wrap gap-3">
 
-    {room.hotel?.amenities?.split(",").map((amenity, index) => {
-      const Icon = getAmenityIcon(amenity.trim());
-      return (
-        <div
-          key={index}
-          className="flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-700 rounded-full text-sm font-medium hover:bg-blue-100 transition"
-        >
-          <Icon className="w-4 h-4" />
-          {amenity.trim()}
-        </div>
-      );
-    })}
+   {normalizeAmenities(room.hotel?.amenities).map((amenity, index) => {
+  const Icon = getAmenityIcon(amenity);
+
+  return (
+    <div
+      key={index}
+      className="flex items-center gap-2 px-4 py-2 bg-purple-50 text-purple-600 rounded-full text-sm font-medium hover:bg-purple-100 transition"
+    >
+      <Icon className="w-4 h-4" />
+      {amenity}
+    </div>
+  );
+})}
 
   </div>
 </div>
@@ -541,7 +589,7 @@ const onSubmitHandler = async (e) => {
                   </div>
                 </div>
 
-                <button className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-semibold py-3 rounded-xl shadow-lg hover:scale-[1.02] transition">
+                <button className="w-full bg-[#8458b3] text-white font-semibold py-3 rounded-xl shadow-lg hover:scale-[1.02] transition">
   {isAvailable ? "Book Now" : "Check Availability"}
 </button>
               </form>

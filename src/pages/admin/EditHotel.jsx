@@ -50,8 +50,7 @@ const EditHotel = () => {
     hotelAddress: "",
     city: "",
     rating: "",
-    price: "",
-    amenities: "",
+    amenities: [],
   });
 
   // FETCH HOTEL
@@ -82,11 +81,8 @@ const EditHotel = () => {
             rating:
               hotel.rating || "",
 
-            price:
-              hotel.price || "",
-
             amenities:
-              hotel.amenities || "",
+              hotel.amenities || [],
           });
 
           setPreviews(
@@ -116,14 +112,21 @@ const EditHotel = () => {
   }, [id]);
 
   // INPUT CHANGE
-  const handleChange = (e) => {
+ const handleChange = (e) => {
+  const { name, value } = e.target;
 
+  if (name === "amenities") {
     setData({
       ...data,
-      [e.target.name]:
-        e.target.value,
+      amenities: value.split(",").map((item) => item.trim()),
     });
-  };
+  } else {
+    setData({
+      ...data,
+      [name]: value,
+    });
+  }
+};
 
   // IMAGE CHANGE
 const handleImageChange = (e, index) => {
@@ -173,15 +176,11 @@ const handleImageChange = (e, index) => {
         data.rating
       );
 
-      formData.append(
-        "price",
-        data.price
-      );
+  formData.append(
+  "amenities",
+  JSON.stringify(data.amenities)
+);
 
-      formData.append(
-        "amenities",
-        data.amenities
-      );
 
      files.forEach((file, index) => {
   if (file) {
@@ -394,24 +393,8 @@ const handleImageChange = (e, index) => {
               />
             </div>
 
-            {/* PRICE */}
-            <div>
-
-              <label className="font-semibold text-gray-700">
-                Price
-              </label>
-
-              <input
-                type="number"
-                name="price"
-                value={data.price}
-                onChange={
-                  handleChange
-                }
-                className="w-full mt-2 border border-gray-200 rounded-xl p-4"
-              />
-            </div>
-
+          
+           
           </div>
 
           {/* AMENITIES */}
@@ -423,9 +406,7 @@ const handleImageChange = (e, index) => {
 
             <textarea
               name="amenities"
-              value={
-                data.amenities
-              }
+              value={data.amenities.join(", ")}
               onChange={
                 handleChange
               }

@@ -22,6 +22,7 @@ import { toast } from "react-hot-toast";
 
 import { useAuth } from "@clerk/clerk-react";
 
+import { normalizeAmenities, getAmenityIcon } from "../../utils/amenities";
 const ViewHotel = () => {
 
   const { id } = useParams();
@@ -108,6 +109,7 @@ const ViewHotel = () => {
       );
     }
   };
+
 
   if (loading) {
 
@@ -318,25 +320,22 @@ const ViewHotel = () => {
             </h2>
 
             <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4">
+{normalizeAmenities(hotel.amenities).map((item, index) => {
+  const Icon = getAmenityIcon(item);
 
-              {hotel.amenities
-                ?.split(",")
-                .map((item, index) => (
+  return (
+    <div
+      key={index}
+      className="flex items-center gap-3 p-4 rounded-xl bg-gray-50 border border-gray-100"
+    >
+      <Icon className="w-5 h-5 text-[#8458b3]" />
 
-                  <div
-                    key={index}
-                    className="flex items-center gap-3 p-4 rounded-xl bg-gray-50 border border-gray-100"
-                  >
-
-                    <CheckCircle className="w-5 h-5 text-[#8458b3]" />
-
-                    <span className="font-medium text-gray-700">
-                      {item.trim()}
-                    </span>
-
-                  </div>
-                ))}
-
+      <span className="font-medium text-gray-700">
+        {item}
+      </span>
+    </div>
+  );
+})}
             </div>
 
           </div>

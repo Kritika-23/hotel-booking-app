@@ -173,7 +173,8 @@ const ViewRoom = () => {
               </div>
 
               <div className="flex flex-wrap gap-3">
-                {room.amenities?.split(",").map((item, index) => (
+                {
+                  room.amenities?.map((item, index) => (
                   <span
                     key={index}
                     className="px-4 py-2 rounded-full bg-purple-100 text-purple-700 text-sm font-medium"

@@ -6,13 +6,11 @@ import { useAuth } from "@clerk/clerk-react";
 const RegisterHotel = () => {
   const { axios, navigate } = useContext(AppContext);
   const { getToken } = useAuth();
-
   const [data, setData] = useState({
     hotelName: "",
     hotelAddress: "",
     city: "",
     rating: "",
-    price: "",
     amenities: "",
   });
 
@@ -38,14 +36,25 @@ const RegisterHotel = () => {
       toast.error("Please select at least one image");
       return;
     }
-
+ {
+  
+  return;
+}
     const formData = new FormData();
     formData.append("hotelName", data.hotelName);
     formData.append("hotelAddress", data.hotelAddress);
     formData.append("city", data.city);
     formData.append("rating", Number(data.rating));
     formData.append("price", Number(data.price));
-    formData.append("amenities", data.amenities);
+   formData.append(
+  "amenities",
+  JSON.stringify(
+    data.amenities
+      .split(",")
+      .map(item => item.trim())
+  )
+);
+ 
 
     // Append multiple images
     files.forEach((file) => {
@@ -83,6 +92,9 @@ if (data.success) {
       toast.error(error.response?.data?.message || "Something went wrong");
     }
   };
+ 
+
+
 return (
   <div className="min-h-screen bg-gradient-to-br from-[#f6f3ff] via-white to-[#f3f8ff] p-6">
 
@@ -181,6 +193,9 @@ return (
 
         {/* GRID */}
         <div className="grid md:grid-cols-2 gap-6">
+         
+
+
 
           {/* HOTEL NAME */}
           <div>
@@ -236,22 +251,7 @@ return (
             />
           </div>
 
-          {/* PRICE */}
-          <div>
-            <label className="text-sm font-medium text-gray-700">
-              Price Per Night
-            </label>
-
-            <input
-              type="number"
-              name="price"
-              value={data.price}
-              onChange={handleChange}
-              required
-              placeholder="₹5000"
-              className="w-full mt-2 px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-[#8458B3] outline-none"
-            />
-          </div>
+         
 
         </div>
 
@@ -261,15 +261,14 @@ return (
             Hotel Address
           </label>
 
-          <textarea
-            name="hotelAddress"
-            value={data.hotelAddress}
-            onChange={handleChange}
-            rows={4}
-            required
-            placeholder="Enter complete hotel address"
-            className="w-full mt-2 px-4 py-3 rounded-xl border border-gray-200 resize-none focus:ring-2 focus:ring-[#8458B3] outline-none"
-          />
+      <input
+  type="text"
+  name="hotelAddress"
+  value={data.hotelAddress}
+  onChange={handleChange}
+  placeholder="Enter hotel address"
+  className="w-full mt-2 px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-[#8458B3] outline-none"
+/>
         </div>
 
         {/* AMENITIES */}

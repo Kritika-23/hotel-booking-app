@@ -4,7 +4,84 @@ import { motion } from "framer-motion";
 import { toast } from "react-hot-toast";
 import { Star } from 'lucide-react';
 import { useAuth } from "@clerk/clerk-react";
+import {
+  Wifi,
+  Car,
+  Coffee,
+  Tv,
+  Bath,
+  Utensils,
+  Mountain,
+  Eye,
+  Building,
+  TreePine,
+  User,
+  CheckCircle,
+} from "lucide-react";
 
+const getAmenityIcon = (amenity) => {
+
+  const key = amenity.toLowerCase();
+
+  if (key.includes("wifi"))
+    return Wifi;
+
+  if (key.includes("parking"))
+    return Car;
+
+  if (
+    key.includes("coffee") ||
+    key.includes("breakfast")
+  )
+    return Coffee;
+
+  if (key.includes("tv"))
+    return Tv;
+
+  if (
+    key.includes("bath") ||
+    key.includes("spa") ||
+    key.includes("jacuzzi") ||
+    key.includes("pool")
+  )
+    return Bath;
+
+  if (
+    key.includes("restaurant") ||
+    key.includes("kitchen") ||
+    key.includes("mini bar")
+  )
+    return Utensils;
+
+  if (key.includes("mountain"))
+    return Mountain;
+
+  if (
+    key.includes("view") ||
+    key.includes("ocean") ||
+    key.includes("panoramic")
+  )
+    return Eye;
+
+  if (
+    key.includes("building") ||
+    key.includes("desk") ||
+    key.includes("living") ||
+    key.includes("terrace")
+  )
+    return Building;
+
+  if (key.includes("garden"))
+    return TreePine;
+
+  if (
+    key.includes("concierge") ||
+    key.includes("butler")
+  )
+    return User;
+
+  return CheckCircle;
+};
 const AllRooms = () => {
   const { getToken } = useAuth();
   const { navigate, axios } = useContext(AppContext);
@@ -179,14 +256,20 @@ const { data } = await axios.delete(
                   {/* AMENITIES */}
                   <td className="p-4 max-w-[180px]">
                     <div className="flex flex-wrap gap-2">
-                      {room.amenities?.split(",").map((amenity, i) => (
-                        <span
-                          key={i}
-                          className="px-3 py-1 text-xs rounded-full bg-purple-100 text-purple-700 font-medium"
-                        >
-                          {amenity.trim()}
-                        </span>
-                      ))}
+                     {room.amenities?.map((amenity, index) => {
+  const Icon = getAmenityIcon(amenity);
+
+  return (
+    <div
+      key={index}
+      className="flex items-center gap-2"
+    >
+      <Icon className="w-4 h-4" />
+
+      <span>{amenity}</span>
+    </div>
+  );
+})}
                     </div>
                   </td>
 

@@ -1,174 +1,110 @@
-import React from 'react';
-import { Link } from 'react-router-dom'; 
+import React from "react";
+import { Link } from "react-router-dom";
 
-// ================= ICONS =================
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Autoplay, Pagination } from "swiper/modules";
 
-const RoomIcon = (props) => (
-    <svg {...props} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-        <path d="M12 3L2 12h3v8h6v-6h2v6h6v-8h3L12 3ZM15 18h-2v-4h-2v4H9v-6.91L12 7.27l3 3.82V18Z" fill="currentColor" />
-    </svg>
-);
+import "swiper/css";
+import "swiper/css/pagination";
 
 // ================= DATA =================
 const offers = [
-    {
-        img: 'https://cdn.tajhotels.com/images/ocl5w36p/prod5/cc7207f2c3d1bf3fa6cd6185c1a4ee84f0361423-700x430.jpg?w=768',
-        title: "DREAM. DRIVE. DISCOVER. DELIGHT. (4D)",
-        description: "Drive away to enjoy the company of your loved ones and spend unforgettable moments.",
-        buttonText: "BOOK NOW",
-        path: "/hotels",
-    },
-    {
-        img: 'https://cdn.tajhotels.com/images/ocl5w36p/prod5/32f316e6179a065e666e274c39c39fa55398227e-700x430.jpg?w=768',
-        title: "TAJ LAKE PALACE, UDAIPUR",
-        description: "Float into a dream on Udaipur's Lake Pichola, where this majestic palace-turned-hotel offers surreal views.",
-        buttonText: "LOGIN / JOIN",
-        path: "/login",
-    },
-    {
-        img: 'https://cdn.tajhotels.com/images/ocl5w36p/prod5/a7781554b1bf548e13b35a4ba28e5697af7d8dc7-700x430.jpg?w=768',
-        title: "SUITE SURPRISES- ",
-        description: "Member Only Indulge in a stay that goes beyond the ordinary and experience enhanced comfort, added space.",
-        buttonText: "BOOK NOW",
-        path: "/rooms",
-    },
-];
-
-const roomImages = [
-    {
-        img: 'https://cdn.tajhotels.com/images/ocl5w36p/prod5/9288ce642c834a00831127d6d433e8b13a1db674-906x972.jpg?w=768',
-        title: "The Royal Suite",
-        price: "$499/night",
-        path: "/room/1",
-    },
-    {
-        img: 'https://cdn.tajhotels.com/images/ocl5w36p/prod5/7b247247a86c40cd01e1330e07c71287ff26348c-907x973.jpg?w=768',
-        title: "Executive Deluxe",
-        price: "$299/night",
-        path: "/room/2",
-    },
-    {
-        img: 'https://cdn.tajhotels.com/images/ocl5w36p/prod5/a707a0a1773da92dc8f0c8f50ffd0d93b50757d8-906x972.jpg?w=768',
-        title: "Family Interconnect",
-        price: "$350/night",
-        path: "/room/3",
-    },
-    {
-        img: 'https://cdn.tajhotels.com/images/ocl5w36p/prod5/feed415480ee5996fd13a5ae1e099c3f6f5fce53-912x966.jpg?w=768',
-        title: "Premier Ocean View",
-        price: "$550/night",
-        path: "/room/4",
-    },
-    {
-        img: 'https://cdn.tajhotels.com/images/ocl5w36p/prod5/ab26ca86816def73001fb4e4af468a6bcd3c53a7-912x966.jpg?w=768',
-        title: "Standard Comfort",
-        price: "$150/night",
-        path: "/room/5",
-    },
+  {
+    title: "🔥 20% OFF First Booking",
+    desc: "Use code WELCOME20 and save instantly on your first stay.",
+    code: "WELCOME20",
+    bg: "bg-purple-50",
+  },
+  {
+    title: "💸 Weekend Special Deal",
+    desc: "Flat ₹1000 off on weekend hotel bookings.",
+    code: "WEEKEND1000",
+    bg: "bg-blue-50",
+  },
+  {
+    title: "🏨 Luxury Upgrade Offer",
+    desc: "Free room upgrade on premium bookings (limited time).",
+    code: "UPGRADEFREE",
+    bg: "bg-pink-50",
+  },
+  {
+    title: "🎉 Festive Sale Offer",
+    desc: "Extra savings during festive season bookings.",
+    code: "FESTIVE25",
+    bg: "bg-yellow-50",
+  },
 ];
 
 // ================= COMPONENT =================
 const ExclusiveOffers = () => {
-    const repeatedRoomImages = [...roomImages, ...roomImages, ...roomImages];
+  return (
+    <section className="py-14 px-4 md:px-10 lg:px-20 bg-white">
+      
+      {/* Heading */}
+      <div className="text-center mb-10">
+        <h2 className="text-3xl md:text-4xl font-bold text-gray-800">
+          Exclusive Offers
+        </h2>
+        <p className="text-gray-500 mt-2">
+          Limited time deals & coupons for your stay
+        </p>
+      </div>
 
-    return (
-        <>
-            <style>
-                {`
-                .hide-scrollbar::-webkit-scrollbar {
-                    display: none;
-                }
-                .hide-scrollbar {
-                    -ms-overflow-style: none;
-                    scrollbar-width: none;
-                }
-                @keyframes autoScroll {
-                    from { transform: translateX(0); }
-                    to { transform: translateX(calc(-288px - 1.5rem)); }
-                }
-                .marquee-scroll {
-                    animation: autoScroll 15s linear infinite;
-                    will-change: transform;
-                }
-                .marquee-scroll:hover {
-                    animation-play-state: paused;
-                }
-                `}
-            </style>
+      {/* Slider */}
+      <Swiper
+        modules={[Autoplay, Pagination]}
+        autoplay={{
+          delay: 2000,
+          disableOnInteraction: false,
+        }}
+        pagination={{ clickable: true }}
+        loop={true}
+        spaceBetween={20}
+        breakpoints={{
+          0: { slidesPerView: 1 },
+          768: { slidesPerView: 2 },
+          1024: { slidesPerView: 3 },
+        }}
+      >
+        {offers.map((item, i) => (
+          <SwiperSlide key={i}>
+            <div
+              className={`${item.bg} border border-gray-100 rounded-2xl p-6 shadow-sm hover:shadow-xl transition h-full`}
+            >
+              <h3 className="text-lg font-semibold text-gray-800">
+                {item.title}
+              </h3>
 
-            {/* ========== 1. Exclusive Offers Section ========== */}
-            <section className='bg-gray-50 py-16 px-4 md:px-8 lg:px-16'>
-                <div className='max-w-6xl mx-auto text-center mb-12'>
-                    <h2 className='text-4xl font-extrabold text-[#2c0850]'>Exclusive Offers</h2>
-                </div>
+              <p className="text-gray-600 text-sm mt-2">
+                {item.desc}
+              </p>
 
-                <div className='grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto'>
-                    {offers.map((offer, index) => (
-                        <div key={index} className='bg-white rounded-xl shadow-xl hover:shadow-2xl transition-shadow duration-300 overflow-hidden'>
-                            <img
-                                src={offer.img}
-                                alt={offer.title}
-                                className='w-full h-48 object-cover object-center transition-transform duration-300 hover:scale-[1.03]'
-                            />
-                            <div className='p-6'>
-                                <h3 className='text-xl font-bold text-[#2c0850] mb-3'>{offer.title}</h3>
-                                <p className='text-gray-600 mb-4 text-sm'>{offer.description}</p>
-                                <Link
-                                    to={offer.path}
-                                    className='block text-center bg-[#8458B3] text-white px-5 py-2.5 rounded-lg font-semibold text-sm hover:bg-[#a277d3] transition-colors w-full'
-                                >
-                                    {offer.buttonText}
-                                </Link>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            </section>
+              {/* Coupon box */}
+              <div className="mt-4 flex items-center justify-between bg-white border rounded-lg px-3 py-2">
+                <span className="font-mono text-sm font-semibold text-purple-700">
+                  {item.code}
+                </span>
 
-            {/* ========== 2. Horizontal Scroll Section (Rooms Gallery) ========== */}
-            <section className='bg-white py-12 px-4 md:px-8 lg:px-16'>
-                <div className='max-w-6xl mx-auto'>
-                    <h2 className='text-3xl font-extrabold text-center text-[#2c0850] mb-8'>Explore Our Rooms & Media</h2>
+                <button
+                  onClick={() => navigator.clipboard.writeText(item.code)}
+                  className="text-xs bg-purple-600 text-white px-3 py-1 rounded-md hover:bg-purple-700 transition"
+                >
+                  Copy
+                </button>
+              </div>
 
-                    <div className='mb-12'>
-                        <div className='flex justify-between items-center mb-4'>
-                            <h3 className='text-2xl font-bold text-gray-800 flex items-center'>
-                                <RoomIcon className="w-6 h-6 mr-2 text-[#8458B3]" />
-                                Featured Rooms Gallery
-                            </h3>
-                            <Link to="/rooms" className='text-[#8458B3] font-semibold hover:text-[#a277d3] transition-colors flex items-center'>
-                                View All Rooms &rarr;
-                            </Link>
-                        </div>
-
-                        <div className='overflow-hidden border rounded-xl shadow-md p-9 bg-gray-50'>
-                            <div className='flex space-x-6 pb-9 hide-scrollbar marquee-scroll w-max'>
-                                {repeatedRoomImages.map((room, index) => (
-                                    <Link
-                                        key={index}
-                                        to={room.path}
-                                        className='flex-shrink-0 w-72 h-80 rounded-xl shadow-lg transition-transform duration-500 hover:scale-[1.02] cursor-pointer bg-white overflow-hidden border border-gray-100'
-                                    >
-                                        <img
-                                            src={room.img}
-                                            alt={room.title}
-                                            className='w-full h-52 object-cover'
-                                        />
-                                        <div className='p-4'>
-                                            <h3 className='text-lg font-bold text-[#2c0850] mb-1'>{room.title}</h3>
-                                            <p className='text-gray-600 text-sm font-semibold'>{room.price}</p>
-                                        </div>
-                                    </Link>
-                                ))}
-                            </div>
-                        </div>
-                    </div>
-
-                  
-                </div>
-            </section>
-        </>
-    );
+              <Link
+                to="/hotels"
+                className="block mt-4 text-center text-sm font-medium text-purple-700 hover:underline"
+              >
+                Book Now →
+              </Link>
+            </div>
+          </SwiperSlide>
+        ))}
+      </Swiper>
+    </section>
+  );
 };
 
 export default ExclusiveOffers;

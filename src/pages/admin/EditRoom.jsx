@@ -16,7 +16,7 @@ const EditRoom = () => {
   const [roomType, setRoomType] = useState("");
   const [pricePerNight, setPricePerNight] = useState("");
   const [description, setDescription] = useState("");
-  const [amenities, setAmenities] = useState("");
+  const [amenities, setAmenities] = useState([]);
   const [isAvailable, setIsAvailable] = useState(true);
 
   const [loading, setLoading] = useState(false);
@@ -36,7 +36,7 @@ const fileInputRef = React.useRef({});
         setRoomType(data.room.roomType || "");
         setPricePerNight(data.room.pricePerNight || "");
         setDescription(data.room.description || "");
-        setAmenities(data.room.amenities || "");
+        setAmenities(data.room.amenities || []);
         setIsAvailable(data.room.isAvailable);
       }
     } catch (error) {
@@ -59,46 +59,56 @@ const fileInputRef = React.useRef({});
   };
 
   // UPDATE ROOM
-  const handleUpdate = async (e) => {
-    e.preventDefault();
+ const handleUpdate = async (e) => {
+  e.preventDefault();
 
-    try {
-      setLoading(true);
+  try {
+    setLoading(true);
 
-      const token = await getToken({ template: "backend" });
+    const token = await getToken({ template: "backend" });
 
-      const formData = new FormData();
-      formData.append("roomType", roomType);
-      formData.append("pricePerNight", pricePerNight);
-      formData.append("description", description);
-      formData.append("amenities", amenities);
-      formData.append("isAvailable", isAvailable);
+    const formData = new FormData();
 
-      newImages.forEach((img) => {
-        if (img) formData.append("images", img);
-      });
+    formData.append("roomType", roomType);
+    formData.append("pricePerNight", pricePerNight);
+    formData.append("description", description);
 
-      const { data } = await axios.put(
-        `/api/rooms/update/${id}`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+   formData.append(
+  "amenities",
+  JSON.stringify(amenities)
+);
 
-      if (data.success) {
-        toast.success("Room updated successfully");
-        navigate("/admin/rooms", { replace: true, state: { refresh: Date.now() } });
+    formData.append("isAvailable", isAvailable);
+
+    newImages.forEach((img) => {
+      if (img instanceof File) {
+        formData.append("images", img);
       }
-    } catch (error) {
-      toast.error(error.response?.data?.message || "Update failed");
-    } finally {
-      setLoading(false);
+    });
+
+    const res = await axios.put(
+      `/api/rooms/update/${id}`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    if (res.data.success) {
+      toast.success("Room updated successfully");
+      navigate("/admin/rooms");
     }
-  };
+
+  } catch (error) {
+    console.log(error.response?.data || error.message);
+    toast.error(error.response?.data?.message || "Update failed");
+  } finally {
+    setLoading(false);
+  }
+};
 
   // DELETE
   const handleDelete = async () => {
@@ -126,11 +136,11 @@ const fileInputRef = React.useRef({});
       <div className="max-w-4xl mx-auto bg-white shadow-2xl rounded-3xl overflow-hidden">
 
         {/* HEADER */}
-        <div className="bg-gradient-to-r from-[#8458B3] via-[#9b6dd1] to-[#FF4D6D] p-8 text-white">
+        <div className="bg-white p-8 text-gray-900">
 
           <button
             onClick={() => navigate(-1)}
-            className="mb-4 bg-white/20 px-4 py-2 rounded-xl hover:bg-white/30"
+            className="mb-4 bg-gray-200 px-4 py-2 rounded-xl hover:bg-gray-100"
           >
             ← Back
           </button>
@@ -197,19 +207,43 @@ const fileInputRef = React.useRef({});
               placeholder="Price"
             />
 
-            <textarea
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              className="w-full p-4 border rounded-2xl"
-              placeholder="Description"
-            />
+       <textarea
+  value={description}
+  onChange={(e) => setDescription(e.target.value)}
+  className="w-full p-4 border rounded-2xl"
+  placeholder="Description"
+/>
 
-            <input
-              value={amenities}
-              onChange={(e) => setAmenities(e.target.value)}
-              className="w-full p-4 border rounded-2xl"
-              placeholder="Amenities"
-            />
+{/* AMENITIES DISPLAY */}
+<div className="mt-4">
+  <h3 className="font-semibold mb-2">Amenities</h3>
+
+  <div className="flex flex-wrap gap-2">
+    {amenities?.map((item, index) => (
+      <span
+        key={index}
+        className="bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-sm"
+      >
+        {item}
+      </span>
+    ))}
+  </div>
+</div>
+
+{/* AMENITIES INPUT */}
+<input
+  value={amenities.join(", ")}
+onChange={(e) =>
+  setAmenities(
+    e.target.value
+      .split(",")
+      .map(item => item.trim())
+      .filter(Boolean)
+  )
+}
+  className="w-full p-4 border rounded-2xl"
+  placeholder="WiFi, AC, TV, Pool"
+/>
 
             <label className="flex items-center gap-2">
               <input

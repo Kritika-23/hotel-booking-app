@@ -5,18 +5,30 @@ import PopularRooms from '../components/PopularRooms'
 import Testimonials from '../components/Testimonials'
 import NewsLetter from '../components/NewsLetter'
 
-
 const Home = () => {
   return (
-    <div className="py-24">
-      <Hero />
-      <MostPicked />
-      <PopularRooms />
-      <Testimonials />
-      <NewsLetter />
-    
-    </div>
-  )
-}
+    <div className="bg-[#f8f7fc] overflow-hidden">
 
-export default Home
+      <Hero />
+
+      <section className="py-8">
+        <MostPicked />
+      </section>
+
+      <section className="py-8">
+        <PopularRooms />
+      </section>
+
+      <section className="py-8">
+        <Testimonials />
+      </section>
+
+      <section className="py-8 pb-20">
+        <NewsLetter />
+      </section>
+
+    </div>
+  );
+};
+
+export default Home;

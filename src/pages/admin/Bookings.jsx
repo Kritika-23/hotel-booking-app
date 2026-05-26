@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { MapPin, Calendar, Users, CheckCircle, Clock, XCircle } from "lucide-react";
+import { MapPin, Calendar, Users, CheckCircle, Clock, XCircle, Building2, BedDouble} from "lucide-react";
 import { toast } from "react-hot-toast";
 import { AppContext } from "../../context/AppContext.jsx";
 import { useAuth } from "@clerk/clerk-react";
@@ -37,7 +37,89 @@ const Bookings = () => {
   useEffect(() => {
     fetchMyBookings();
   }, []);
+const confirmBooking = async (id) => {
+  try {
 
+    const token = await getToken({
+      template: "backend",
+    });
+
+    await axios.put(
+      `/api/bookings/confirm/${id}`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    toast.success("Booking confirmed");
+
+    fetchMyBookings();
+
+  } catch (error) {
+
+    toast.error(error.message);
+
+  }
+};
+
+const cancelBooking = async (id) => {
+  try {
+
+    const token = await getToken({
+      template: "backend",
+    });
+
+    await axios.put(
+      `/api/bookings/cancel/${id}`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    toast.success("Booking cancelled");
+
+    fetchMyBookings();
+
+  } catch (error) {
+
+    toast.error(error.message);
+
+  }
+};
+
+const markAsPaid = async (id) => {
+  try {
+
+    const token = await getToken({
+      template: "backend",
+    });
+
+    await axios.put(
+      `/api/bookings/paid/${id}`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    toast.success("Payment updated");
+
+    fetchMyBookings();
+
+  } catch (error) {
+
+    toast.error(error.message);
+
+  }
+};
   const getStatusColor = (status) => {
     switch (status) {
       case "confirmed": return "bg-green-500";
@@ -76,7 +158,7 @@ return (
   <div className="min-h-screen bg-[#f4f1f8] p-6">
 
     {/* HERO HEADER */}
-    <div className="relative overflow-hidden rounded-[32px] bg-gradient-to-r from-[#8458B3] via-[#9d72cf] to-[#FF4D6D] p-8 md:p-10 shadow-2xl mb-10">
+    <div className="relative overflow-hidden rounded-[30px] bg-gradient-to-r from-[#9d6cc7] via-[#d7c1f0] to-[#9d6cc7] p-8 shadow-2xl mb-8">
 
       {/* GLOW EFFECTS */}
       <div className="absolute top-0 right-0 w-80 h-80 bg-white/20 rounded-full blur-3xl"></div>
@@ -84,13 +166,11 @@ return (
 
       <div className="relative z-10">
 
-        <h1 className="text-4xl md:text-5xl font-black text-white">
-          My Bookings
+        <h1 className="text-4xl font-black text-white">
+          Manage Bookings
         </h1>
+        <p className="text-white"> Manage all hotel booking activities</p>
 
-       <p className="text-white/80 text-lg mt-3 max-w-2xl leading-relaxed">
-  Monitor hotel performance, booking activity, payments, and room management from one centralized dashboard.
-</p>
       </div>
 
     </div>
@@ -130,9 +210,7 @@ return (
               className="group relative overflow-hidden backdrop-blur-2xl bg-white/70 border border-white/40 rounded-[32px] shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-all duration-500"
             >
 
-              {/* TOP GRADIENT LINE */}
-              <div className="h-1.5 bg-gradient-to-r from-[#8458B3] via-[#9f6dd6] to-[#FF4D6D]"></div>
-
+          
               <div className="p-6 md:p-8">
 
                 <div className="grid xl:grid-cols-12 gap-8 items-center">
@@ -195,30 +273,56 @@ return (
                       </div>
 
                     </div>
+<div className="mt-5 space-y-4">
 
-                    <div className="mt-5 space-y-4">
+  {/* ROOM */}
+  <div className="flex items-center gap-3 text-gray-700">
+    <BedDouble className="w-5 h-5 text-[#8458B3]" />
 
-                      <div className="flex items-center gap-3 text-gray-700">
+    <span className="font-semibold">
+      {booking.room?.roomType}
+    </span>
+  </div>
 
-                        <BedDouble className="w-5 h-5 text-[#8458B3]" />
+  {/* LOCATION */}
+  <div className="flex items-start gap-3 text-gray-500">
+    <MapPin className="w-5 h-5 mt-0.5 text-[#8458B3]" />
 
-                        <span className="font-semibold">
-                          {booking.room?.roomType}
-                        </span>
+    <span className="leading-relaxed">
+      {booking.hotel?.hotelAddress}
+    </span>
+  </div>
 
-                      </div>
+  {/* GUESTS */}
+  <div className="flex items-center gap-3 text-gray-700">
+    <Users className="w-5 h-5 text-[#8458B3]" />
 
-                      <div className="flex items-start gap-3 text-gray-500">
+    <span className="font-semibold">
+      {booking.persons} Guests
+    </span>
+  </div>
 
-                        <MapPin className="w-5 h-5 mt-0.5 text-[#8458B3]" />
+  {/* BOOKING ID */}
+  <div className="flex items-center gap-3 text-gray-700">
 
-                        <span className="leading-relaxed">
-                          {booking.hotel?.hotelAddress}
-                        </span>
+    <div className="w-5 h-5 rounded-full bg-[#8458B3]" />
 
-                      </div>
+    <span className="font-semibold">
+      Booking ID: {booking.bookingId}
+    </span>
+  </div>
 
-                    </div>
+  {/* PAYMENT METHOD */}
+  <div className="flex items-center gap-3 text-gray-700">
+
+    <div className="w-5 h-5 rounded-full bg-pink-500" />
+
+    <span className="font-semibold">
+      {booking.paymentMethod}
+    </span>
+  </div>
+
+</div>
 
                   </div>
 
@@ -260,39 +364,81 @@ return (
                   </div>
 
                   {/* PAYMENT */}
-                  <div className="xl:col-span-2">
+{/* PAYMENT & ACTIONS */}
+<div className="xl:col-span-2">
 
-                    <div className="relative overflow-hidden rounded-[28px] bg-gradient-to-br from-[#8458B3] to-[#6b42a0] p-6 text-white shadow-2xl">
+  <div className="bg-white rounded-3xl border border-gray-200 p-5 shadow-sm h-full">
 
-                      {/* GLOW */}
-                      <div className="absolute -top-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-2xl"></div>
+    {/* TOTAL */}
+    <div className="mb-5">
+      <p className="text-sm text-gray-500">
+        Total Amount
+      </p>
 
-                      <div className="relative z-10">
+      <h2 className="text-3xl font-bold text-[#8458B3] mt-1">
+        ₹{booking.totalPrice || 0}
+      </h2>
+    </div>
 
-                        <p className="text-sm text-white/70">
-                          Total Amount
-                        </p>
+    {/* PAYMENT STATUS */}
+    <div
+      className={`inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold ${
+        booking.isPaid
+          ? "bg-green-100 text-green-700"
+          : "bg-red-100 text-red-700"
+      }`}
+    >
+      {booking.isPaid ? "Paid" : "Pending"}
+    </div>
 
-                        <h2 className="text-4xl font-black mt-2">
-                          ₹{booking.totalPrice || 0}
-                        </h2>
+    {/* BOOKING STATUS */}
+    <div
+      className={`mt-3 inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold ${
+        booking.status === "confirmed"
+          ? "bg-green-100 text-green-700"
+          : booking.status === "pending"
+          ? "bg-yellow-100 text-yellow-700"
+          : "bg-red-100 text-red-700"
+      }`}
+    >
+      {booking.status.toUpperCase()}
+    </div>
 
-                        <div
-                          className={`mt-5 inline-flex items-center px-4 py-2 rounded-full text-sm font-bold shadow ${
-                            booking.isPaid
-                              ? "bg-green-200 text-green-800"
-                              : "bg-red-200 text-red-700"
-                          }`}
-                        >
-                          {booking.isPaid ? "Paid" : "Pending"}
-                        </div>
+    {/* ACTIONS */}
+    <div className="flex flex-col gap-3 mt-6">
 
-                      </div>
+      {booking.status !== "confirmed" && (
+        <button
+          onClick={() => confirmBooking(booking._id)}
+          className="w-full py-2.5 rounded-xl bg-green-500 hover:bg-green-600 transition text-white font-medium"
+        >
+          Confirm
+        </button>
+      )}
 
-                    </div>
+      {booking.status !== "cancelled" && (
+        <button
+          onClick={() => cancelBooking(booking._id)}
+          className="w-full py-2.5 rounded-xl bg-red-500 hover:bg-red-600 transition text-white font-medium"
+        >
+          Cancel
+        </button>
+      )}
 
-                  </div>
+      {!booking.isPaid && (
+        <button
+          onClick={() => markAsPaid(booking._id)}
+          className="w-full py-2.5 rounded-xl bg-[#8458B3] hover:bg-[#6f4699] transition text-white font-medium"
+        >
+          Mark as Paid
+        </button>
+      )}
 
+    </div>
+
+  </div>
+
+</div>
                 </div>
 
               </div>

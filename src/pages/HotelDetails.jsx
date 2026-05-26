@@ -5,7 +5,21 @@ import { CheckCircle, MapPin, Star } from "lucide-react";
 import { AppContext } from "../context/AppContext"; 
 import RoomCard from '../components/RoomCard'; 
 import Button from "../components/Button";
-import { Wifi, Car, Utensils, Dumbbell, Tv, Coffee, Snowflake, Bath, Eye, Building } from "lucide-react";
+import { normalizeAmenities } from "../utils/amenities";
+import {
+  Wifi,
+  Car,
+  Utensils,
+  Dumbbell,
+  Tv,
+  Coffee,
+  Snowflake,
+  Bath,
+  Eye,
+  Building,
+  Waves,
+  ShieldCheck
+} from "lucide-react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, Autoplay, EffectFade } from "swiper/modules";
 
@@ -15,7 +29,6 @@ import "swiper/css/pagination";
 import "swiper/css/effect-fade";
 
 const getAmenityIcon = (amenity) => {
-
   const key = amenity.toLowerCase();
 
   if (key.includes("wifi")) return Wifi;
@@ -47,6 +60,12 @@ const getAmenityIcon = (amenity) => {
 
   if (key.includes("view"))
     return Eye;
+
+  if (key.includes("pool") || key.includes("swimming"))
+    return Waves;
+
+  if (key.includes("security"))
+    return ShieldCheck;
 
   return Wifi;
 };
@@ -89,7 +108,25 @@ const [activeIndex, setActiveIndex] = useState(0);
     return <p className="py-24 text-center text-red-500">Hotel not found!</p>;
 
 
-  
+
+
+const prices = rooms
+  ?.map((room) => {
+    const price =
+      room?.price || room?.rent || room?.pricePerNight;
+
+    if (price == null) return null;
+
+    const num = Number(String(price).replace(/[^0-9]/g, ""));
+
+    return isNaN(num) ? null : num;
+  })
+  .filter((n) => typeof n === "number" && !isNaN(n));
+
+const minPrice =
+  prices && prices.length > 0 ? Math.min(...prices) : null;
+
+
 return (
  <div className="pt-10 pb-16 max-w-6xl mx-auto">
 
@@ -116,16 +153,7 @@ return (
     {/* Content */}
     <div className="relative z-10 grid md:grid-cols-2 gap-8 p-8 items-center">
 
-      {/* Image */}
-     {/* <img
-  src={
-    hotel?.images?.length
-      ? `http://localhost:4000${hotel.images[0]}`
-      : "/placeholder.jpg"
-  }
-  alt={hotel?.hotelName}
-  className="w-full h-[400px] object-cover rounded-xl"
-/> */}
+  
 
 
 <div className="flex gap-4 overflow-x-auto">
@@ -186,20 +214,19 @@ return (
       </span>
     </div>
 
-    <div className="flex justify-between items-center">
-      <span className="text-gray-300">💰 Price</span>
-      <span className="text-green-300 font-bold text-lg">
-        ₹{hotel?.price}
-      </span>
-    </div>
-
+  
     <div className="flex justify-between items-start gap-4">
       <span className="text-gray-300">📍 Address</span>
       <span className="text-right text-gray-100 leading-snug">
         {hotel?.hotelAddress}
       </span>
     </div>
-
+<div className="absolute top-4 right-4 bg-white/80 backdrop-blur-md px-4 py-2 rounded-full shadow-sm">
+  <p className="text-sm font-semibold text-green-600">
+    ₹{minPrice ? minPrice : "N/A"}
+    <span className="text-xs text-gray-500"> /night</span>
+  </p>
+</div>
   </div>
 
   {/* Button */}
@@ -218,21 +245,50 @@ return (
 </div>
 </div>
 {/*===== Hotel Info Card ===== */}
-   <div className="max-w-6xl mx-auto mt-10 grid sm:grid-cols-3 gap-6 px-4">
+  <div className="max-w-6xl mx-auto mt-10 grid sm:grid-cols-3 gap-6 px-4">
 
   {[
-    { icon: "📍", label: "Address", value: hotel.hotelAddress },
-    { icon: "⭐", label: "Rating", value: `${hotel.rating}/5` },
-    { icon: "💰", label: "Price", value: `₹${hotel.price}` },
-  ].map((item, i) => (
-    <div key={i} className="bg-white rounded-2xl shadow-md p-6 hover:shadow-xl transition border border-gray-100">
+    {
+      icon: "📍",
+      label: "Address",
+      value: hotel.hotelAddress,
+    },
 
-      <div className="text-2xl">{item.icon}</div>
-      <h3 className="text-gray-500 text-sm mt-2">{item.label}</h3>
-      <p className="text-lg font-semibold text-gray-800 mt-1">{item.value}</p>
+    {
+      icon: "⭐",
+      label: "Rating",
+      value: `${hotel.rating}/5`,
+    },
+
+ {
+  icon: "💰",
+  label: "Starting Price",
+  value: minPrice ? `₹${minPrice}/night` : "Not Available",
+}
+
+  ].map((item, i) => (
+
+    <div
+      key={i}
+      className="bg-white rounded-2xl shadow-md p-6 hover:shadow-xl transition border border-gray-100"
+    >
+
+      <div className="text-2xl">
+        {item.icon}
+      </div>
+
+      <h3 className="text-gray-500 text-sm mt-2">
+        {item.label}
+      </h3>
+
+      <p className="text-lg font-semibold text-gray-800 mt-1">
+        {item.value}
+      </p>
 
     </div>
+
   ))}
+
 </div>
     {/* ===== Amenities Section ===== */}
     <div className="bg-white rounded-3xl shadow-xl p-10 mt-14 border border-purple-100 
@@ -240,17 +296,17 @@ return (
       <h2 className="text-3xl font-bold text-[#2c0850] mb-6">Hotel Amenities</h2>
       
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-     {hotel.amenities && hotel.amenities.length > 0 ? (
-  hotel.amenities.split(",").map((item, index) => {
-    const Icon = getAmenityIcon(item.trim());
+ {normalizeAmenities(hotel.amenities).length > 0 ? (
+  normalizeAmenities(hotel.amenities).map((item, index) => {
+    const Icon = getAmenityIcon(item);
+
     return (
       <div
         key={index}
-        className="flex items-center gap-3 p-4 bg-purple-50 border border-purple-100 rounded-xl 
-        hover:bg-purple-100 transition-all duration-300"
+        className="flex items-center gap-3 p-4 bg-purple-50 border border-purple-100 rounded-xl hover:bg-purple-100 transition-all duration-300"
       >
         <Icon className="w-5 h-5 text-[#8458b3]" />
-        <span className="text-gray-700 font-medium">{item.trim()}</span>
+        <span className="text-gray-700 font-medium">{item}</span>
       </div>
     );
   })

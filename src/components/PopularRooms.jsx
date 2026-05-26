@@ -1,42 +1,50 @@
-import React, { useContext } from 'react'
-import { AppContext } from '../context/AppContext'
-import RoomCard from './RoomCard'
-
-
+import React, { useContext } from "react";
+import { motion } from "framer-motion";
+import { AppContext } from "../context/AppContext";
+import RoomCard from "./RoomCard";
 
 const PopularRooms = () => {
-  const { roomData } = useContext(AppContext)
-  
+  const { roomData } = useContext(AppContext);
+
   return (
-    <div className='py-12' >
-      <h1 className='text-[#2c0850] text-3xl font-semibold text-center mx-auto'>
-        Popular Rooms
-      </h1>
-      <p className='text-[#AA60C8] text-sm text-center max-w-lg mx-auto'>
-        Explore our top-rated rooms, loved by guests for comfort and location.
-      </p>
+    <section className="py-20 bg-[#f8f7fc]">
+      <div className="max-w-7xl mx-auto px-6">
 
-    <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 max-w-7xl mx-auto mt-12'>
-  {/* {roomData.map((room)=>(
-    <RoomCard key={ room._id} room={room} />
+        {/* HEADER */}
+        <div className="text-center mb-14">
+          <p className="text-[#8458b3] font-semibold uppercase tracking-[4px] text-2xl">
+            Luxury Rooms
+          </p>
 
-    
-  ))} */}
-  {Array.isArray(roomData) &&
-  roomData.map((room) => (
+          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mt-4">
+            Popular Rooms
+          </h1>
 
-    <RoomCard
-      key={room._id}
-      room={room}
-    />
+          <p className="text-gray-500 max-w-2xl mx-auto mt-5 text-lg leading-relaxed">
+            Discover elegant rooms designed for comfort, luxury, and unforgettable stays.
+          </p>
+        </div>
 
-))}
-  
-   </div>
+        {/* ROOMS GRID */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-8">
 
+          {Array.isArray(roomData) &&
+            roomData.map((room, index) => (
+              <motion.div
+                key={room._id || index}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4 }}
+              >
+                <RoomCard room={room} />
+              </motion.div>
+            ))}
 
-    </div>
-  )
-}
+        </div>
 
-export default PopularRooms
+      </div>
+    </section>
+  );
+};
+
+export default PopularRooms;

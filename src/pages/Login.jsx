@@ -1,123 +1,187 @@
-// import React from 'react';
-// import { Mail, Lock } from 'lucide-react';
-// import { Link } from 'react-router-dom';
-// import { AppContext } from '../context/AppContext'; 
-// import toast from 'react-hot-toast';
-// import { useSignIn } from "@clerk/clerk-react";
-// import { useAuth, useClerk } from "@clerk/clerk-react";
+
+
+// import React, { useContext, useEffect, useState } from "react";
+// import { Mail, Lock } from "lucide-react";
+// import { Link } from "react-router-dom";
+// import toast from "react-hot-toast";
+
+// import { AppContext } from "../context/AppContext";
+
+// import {
+//   useSignIn,
+//   useAuth,
+//   useClerk,
+// } from "@clerk/clerk-react";
 
 // const Login = ({ defaultState }) => {
-//   const { isSignedIn } = useAuth();
-//   const { signOut } = useClerk();
-//   const { getToken } = useAuth();
-//   const [state, setState] = React.useState(defaultState || "login");
-//   const { signIn, setActive } = useSignIn();
-//   const { setUser, navigate, setOwner, axios } = React.useContext(AppContext);
 
-//   const [formData, setFormData] = React.useState({
-  
+//   const { signIn, setActive } = useSignIn();
+
+//   const { getToken, isSignedIn, isLoaded } = useAuth();
+
+//   const { signOut } = useClerk();
+
+//   const {
+//     setUser,
+//     navigate,
+//     setOwner,
+//     axios,
+//   } = useContext(AppContext);
+
+//   const [state, setState] = useState(
+//     defaultState || "login"
+//   );
+
+//   const [loading, setLoading] = useState(false);
+
+//   const [formData, setFormData] = useState({
 //     email: "",
 //     password: "",
 //   });
-// const handleSubmit = async (e) => {
+
+  
+
+//   // ✅ Input change handler
+//   const handleChange = (e) => {
+
+//     const { name, value } = e.target;
+
+//     setFormData((prev) => ({
+//       ...prev,
+//       [name]: value,
+//     }));
+//   };
+
+//   // ✅ Login handler
+//   const handleSubmit = async (e) => {
 //   e.preventDefault();
 
+//   if (!isLoaded) return;
+
+//   setLoading(true);
+
 //   try {
+//     // ✅ If already signed in, clear old session
+//     if (isSignedIn) {
+//       await signOut();
+//     }
+
+//     // ✅ Clerk login
 //     const result = await signIn.create({
 //       identifier: formData.email,
 //       password: formData.password,
 //     });
 
-//  if (result.status === "complete") {
+//     // ✅ If login success
+//     if (result.status === "complete") {
+      
+//       // 🔐 Activate session
+//       await setActive({
+//         session: result.createdSessionId,
+//       });
 
-//   await setActive({
-//     session: result.createdSessionId,
-//   });
+//       // ⏳ Get backend token
+//       const token = await getToken({
+//         template: "backend",
+//       });
 
-//   const token = await getToken({
-//     template: "backend",
-//   });
+//       if (!token) {
+//         toast.error("Authentication failed");
+//         return;
+//       }
 
-//   console.log("TOKEN:", token);
+//       // 🌐 Fetch user from backend (ONLY SOURCE OF TRUTH)
+//       const { data } = await axios.get("/api/user/me", {
+//         headers: {
+//           Authorization: `Bearer ${token}`,
+//         },
+//       });
 
-//   const response = await axios.get(
-//     "/api/user/me",
-//     {
-//       headers: {
-//         Authorization: `Bearer ${token}`,
-//       },
+//       if (!data.success) {
+//         toast.error("User fetch failed");
+//         return;
+//       }
+
+//       const user = data.user;
+
+//       // 💾 Save user globally
+//       setUser(user);
+
+//       // 🧠 Set role globally
+//       const isAdmin = user.role === "admin";
+//       setOwner(isAdmin);
+
+//       toast.success(
+//         isAdmin ? "Admin login successful" : "Login successful"
+//       );
+
+//       // 🚀 Navigate based on role
+//       if (isAdmin) {
+//         navigate("/admin");
+//       } else {
+//         navigate("/profile");
+//       }
+
+//       window.scrollTo(0, 0);
+//     } else {
+//       toast.error("Login incomplete, additional verification required");
 //     }
-//   );
-
-//   setUser(response.data.user);
-
-//   toast.success("Login successful");
-
-//   if (response.data.user.role === "admin") {
-
-//     navigate("/admin");
-
-//   } else {
-
-//     navigate("/profile");
-
-//   }
-
-// } else {
-
-//   console.log("Additional steps required:", result);
-
-//   toast.error("Something went wrong. Try again.");
-
-// } 
-
 //   } catch (error) {
-//    console.log("FULL ERROR:", error);
+//     console.log("LOGIN ERROR:", error);
 
-// console.log("CLERK ERRORS:", error.errors);
-
-// toast.error(
-//   error.errors?.[0]?.message || error.message || "Login failed"
-// );
+//     toast.error(
+//       error?.errors?.[0]?.message ||
+//         error?.message ||
+//         "Login failed"
+//     );
+//   } finally {
+//     setLoading(false);
 //   }
 // };
-
-//   const handleChange = (e) => {
-//     const { name, value } = e.target;
-//     setFormData(prev => ({ ...prev, [name]: value }));
-//   };
 //   return (
 //     <div className="flex justify-center items-center min-h-screen bg-gray-100">
+
 //       <form
 //         onSubmit={handleSubmit}
 //         className="w-full max-w-sm mx-auto p-8 bg-white shadow-xl rounded-xl space-y-6 text-center"
 //       >
-//         <h1 style={{ color: "#8458B3" }} className="text-3xl font-bold mt-4">
+
+//         <h1
+//           style={{ color: "#8458B3" }}
+//           className="text-3xl font-bold mt-4"
+//         >
 //           Login
 //         </h1>
 
-//         <p style = {{ color: "#8458B3" }} className="text-sm mt-2">
+//         <p
+//           style={{ color: "#8458B3" }}
+//           className="text-sm mt-2"
+//         >
 //           Please sign in to continue
 //         </p>
 
-//         {/* Email input */}
-//         <div className = "flex items-center w-full mt-6 bg-white border border-gray-300/80 h-12 rounded-lg overflow-hidden pl-6 gap-2">
-//           <Mail className = "w-4 h-4" />
+//         {/* Email */}
+//         <div className="flex items-center w-full mt-6 bg-white border border-gray-300/80 h-12 rounded-lg overflow-hidden pl-6 gap-2">
+
+//           <Mail className="w-4 h-4" />
+
 //           <input
-//             type = "email"
-//             name = "email"
-//             placeholder = "Email"
-//             className = "border-none outline-none ring-0 w-full"
-//             value = {formData.email}
-//             onChange = {handleChange}
-//             autoComplete = "off"
+//             type="email"
+//             name="email"
+//             placeholder="Email"
+//             className="border-none outline-none ring-0 w-full"
+//             value={formData.email}
+//             onChange={handleChange}
+//             autoComplete="off"
 //             required
 //           />
 //         </div>
 
-//         {/* Password input */}
+//         {/* Password */}
 //         <div className="flex items-center w-full mt-4 bg-white border border-gray-300/80 h-12 rounded-lg overflow-hidden pl-6 gap-2">
+
 //           <Lock className="w-4 h-4" />
+
 //           <input
 //             type="password"
 //             name="password"
@@ -130,18 +194,23 @@
 //           />
 //         </div>
 
-//         {/* Submit button */}
+//         {/* Submit */}
 //         <button
 //           type="submit"
-//           className="mt-2 w-full h-11 rounded-lg text-white cursor-pointer hover:opacity-90 transition-opacity"
+//           disabled={loading}
+//           className="mt-2 w-full h-11 rounded-lg text-white cursor-pointer hover:opacity-90 transition-opacity disabled:opacity-50"
 //           style={{ backgroundColor: "#8458B3" }}
 //         >
-//           Login
+//           {loading ? "Logging in..." : "Login"}
 //         </button>
 
 //         {/* Signup link */}
-//         <p className="text-sm mt-3 mb-6" style = {{ color: "#8458B3" }}>
+//         <p
+//           className="text-sm mt-3 mb-6"
+//           style={{ color: "#8458B3" }}
+//         >
 //           Don't have an account?{" "}
+
 //           <Link
 //             to="/signup"
 //             className="hover:underline cursor-pointer"
@@ -150,15 +219,27 @@
 //             Signup
 //           </Link>
 //         </p>
+
 //       </form>
 //     </div>
 //   );
 // };
 
 // export default Login;
-import React, { useContext, useEffect, useState } from "react";
-import { Mail, Lock } from "lucide-react";
+
+import React, {
+  useContext,
+  useState,
+} from "react";
+
+import {
+  Mail,
+  Lock,
+  Hotel,
+} from "lucide-react";
+
 import { Link } from "react-router-dom";
+
 import toast from "react-hot-toast";
 
 import { AppContext } from "../context/AppContext";
@@ -171,16 +252,20 @@ import {
 
 const Login = ({ defaultState }) => {
 
-  const { signIn, setActive } = useSignIn();
+  const { signIn, setActive } =
+    useSignIn();
 
-  const { getToken, isSignedIn, isLoaded } = useAuth();
+  const {
+    getToken,
+    isSignedIn,
+    isLoaded,
+  } = useAuth();
 
   const { signOut } = useClerk();
 
   const {
     setUser,
     navigate,
-    setOwner,
     axios,
   } = useContext(AppContext);
 
@@ -188,16 +273,19 @@ const Login = ({ defaultState }) => {
     defaultState || "login"
   );
 
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] =
+    useState(false);
 
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
+  const [formData, setFormData] =
+    useState({
+      email: "",
+      password: "",
+    });
 
-  
+  // =================================================
+  // ✅ INPUT CHANGE
+  // =================================================
 
-  // ✅ Input change handler
   const handleChange = (e) => {
 
     const { name, value } = e.target;
@@ -208,175 +296,248 @@ const Login = ({ defaultState }) => {
     }));
   };
 
-  // ✅ Login handler
+  // =================================================
+  // ✅ LOGIN
+  // =================================================
+
   const handleSubmit = async (e) => {
-  e.preventDefault();
 
-  if (!isLoaded) return;
+    e.preventDefault();
 
-  setLoading(true);
+    if (!isLoaded) return;
 
-  try {
-    // ✅ If already signed in, clear old session
-    if (isSignedIn) {
-      await signOut();
-    }
+    setLoading(true);
 
-    // ✅ Clerk login
-    const result = await signIn.create({
-      identifier: formData.email,
-      password: formData.password,
-    });
+    try {
 
-    // ✅ If login success
-    if (result.status === "complete") {
-      
-      // 🔐 Activate session
-      await setActive({
-        session: result.createdSessionId,
-      });
-
-      // ⏳ Get backend token
-      const token = await getToken({
-        template: "backend",
-      });
-
-      if (!token) {
-        toast.error("Authentication failed");
-        return;
+      // ✅ Clear old session
+      if (isSignedIn) {
+        await signOut();
       }
 
-      // 🌐 Fetch user from backend (ONLY SOURCE OF TRUTH)
-      const { data } = await axios.get("/api/user/me", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+      // ✅ Clerk Login
+      const result = await signIn.create({
+        identifier: formData.email,
+        password: formData.password,
       });
 
-      if (!data.success) {
-        toast.error("User fetch failed");
-        return;
+      // ✅ Login Complete
+      if (result.status === "complete") {
+
+        // Activate Session
+        await setActive({
+          session:
+            result.createdSessionId,
+        });
+
+        // Backend Token
+        const token = await getToken({
+          template: "backend",
+        });
+
+        if (!token) {
+
+          toast.error(
+            "Authentication failed"
+          );
+
+          return;
+        }
+
+        // Fetch User
+        const { data } = await axios.get(
+          "/api/user/me",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        if (!data.success) {
+
+          toast.error(
+            "User fetch failed"
+          );
+
+          return;
+        }
+
+       const currentUser = data.user;
+
+// save globally
+setUser(currentUser);
+
+console.log("LOGIN ROLE:", currentUser.role);
+
+// navigate directly using backend response
+if (currentUser.role === "admin") {
+
+  toast.success("Admin login successful");
+
+  navigate("/admin", {
+    replace: true,
+  });
+
+} else {
+
+  toast.success("Login successful");
+
+  navigate("/", {
+    replace: true,
+  });
+}
+        window.scrollTo(0, 0);
+
+      } else {
+
+        toast.error(
+          "Additional verification required"
+        );
       }
 
-      const user = data.user;
+    } catch (error) {
 
-      // 💾 Save user globally
-      setUser(user);
-
-      // 🧠 Set role globally
-      const isAdmin = user.role === "admin";
-      setOwner(isAdmin);
-
-      toast.success(
-        isAdmin ? "Admin login successful" : "Login successful"
+      console.log(
+        "LOGIN ERROR:",
+        error
       );
 
-      // 🚀 Navigate based on role
-      if (isAdmin) {
-        navigate("/admin");
-      } else {
-        navigate("/profile");
-      }
+      toast.error(
+        error?.errors?.[0]?.message ||
+          error?.message ||
+          "Login failed"
+      );
 
-      window.scrollTo(0, 0);
-    } else {
-      toast.error("Login incomplete, additional verification required");
+    } finally {
+
+      setLoading(false);
     }
-  } catch (error) {
-    console.log("LOGIN ERROR:", error);
+  };
 
-    toast.error(
-      error?.errors?.[0]?.message ||
-        error?.message ||
-        "Login failed"
-    );
-  } finally {
-    setLoading(false);
-  }
-};
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100">
 
-      <form
-        onSubmit={handleSubmit}
-        className="w-full max-w-sm mx-auto p-8 bg-white shadow-xl rounded-xl space-y-6 text-center"
-      >
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#f6f0ff] via-white to-[#efe4ff] px-4 relative overflow-hidden">
 
-        <h1
-          style={{ color: "#8458B3" }}
-          className="text-3xl font-bold mt-4"
+      {/* BLUR EFFECTS */}
+      <div className="absolute top-0 left-0 w-72 h-72 bg-purple-300/30 rounded-full blur-3xl"></div>
+
+      <div className="absolute bottom-0 right-0 w-96 h-96 bg-pink-300/20 rounded-full blur-3xl"></div>
+
+      {/* LOGIN CARD */}
+      <div className="relative z-10 w-full max-w-md">
+
+        <form
+          onSubmit={handleSubmit}
+          className="bg-white/70 backdrop-blur-2xl border border-white/50 shadow-2xl rounded-[32px] p-8"
         >
-          Login
-        </h1>
 
-        <p
-          style={{ color: "#8458B3" }}
-          className="text-sm mt-2"
-        >
-          Please sign in to continue
-        </p>
+          {/* LOGO */}
+          <div className="flex justify-center mb-6">
 
-        {/* Email */}
-        <div className="flex items-center w-full mt-6 bg-white border border-gray-300/80 h-12 rounded-lg overflow-hidden pl-6 gap-2">
+            <div className="w-20 h-20 rounded-3xl bg-gradient-to-r from-[#8458b3] to-purple-600 flex items-center justify-center shadow-xl">
 
-          <Mail className="w-4 h-4" />
+              <Hotel className="w-10 h-10 text-white" />
 
-          <input
-            type="email"
-            name="email"
-            placeholder="Email"
-            className="border-none outline-none ring-0 w-full"
-            value={formData.email}
-            onChange={handleChange}
-            autoComplete="off"
-            required
-          />
-        </div>
+            </div>
 
-        {/* Password */}
-        <div className="flex items-center w-full mt-4 bg-white border border-gray-300/80 h-12 rounded-lg overflow-hidden pl-6 gap-2">
+          </div>
 
-          <Lock className="w-4 h-4" />
+          {/* TITLE */}
+          <div className="text-center mb-8">
 
-          <input
-            type="password"
-            name="password"
-            placeholder="Password"
-            className="border-none outline-none ring-0 w-full"
-            value={formData.password}
-            onChange={handleChange}
-            autoComplete="new-password"
-            required
-          />
-        </div>
+            <h1 className="text-4xl font-black text-gray-800">
+              Welcome Back
+            </h1>
 
-        {/* Submit */}
-        <button
-          type="submit"
-          disabled={loading}
-          className="mt-2 w-full h-11 rounded-lg text-white cursor-pointer hover:opacity-90 transition-opacity disabled:opacity-50"
-          style={{ backgroundColor: "#8458B3" }}
-        >
-          {loading ? "Logging in..." : "Login"}
-        </button>
+            <p className="text-gray-500 mt-3 text-sm">
+              Login to continue your
+              luxury hotel experience
+            </p>
 
-        {/* Signup link */}
-        <p
-          className="text-sm mt-3 mb-6"
-          style={{ color: "#8458B3" }}
-        >
-          Don't have an account?{" "}
+          </div>
 
-          <Link
-            to="/signup"
-            className="hover:underline cursor-pointer"
-            style={{ color: "#8458B3" }}
+          {/* EMAIL */}
+          <div className="mb-5">
+
+            <label className="text-sm font-semibold text-gray-700 mb-2 block">
+              Email Address
+            </label>
+
+            <div className="flex items-center gap-3 h-14 px-5 rounded-2xl border border-gray-200 bg-white/80 focus-within:border-[#8458b3] transition-all">
+
+              <Mail className="w-5 h-5 text-[#8458b3]" />
+
+              <input
+                type="email"
+                name="email"
+                placeholder="Enter your email"
+                className="w-full bg-transparent outline-none text-gray-700"
+                value={formData.email}
+                onChange={handleChange}
+                autoComplete="off"
+                required
+              />
+
+            </div>
+
+          </div>
+
+          {/* PASSWORD */}
+          <div className="mb-6">
+
+            <label className="text-sm font-semibold text-gray-700 mb-2 block">
+              Password
+            </label>
+
+            <div className="flex items-center gap-3 h-14 px-5 rounded-2xl border border-gray-200 bg-white/80 focus-within:border-[#8458b3] transition-all">
+
+              <Lock className="w-5 h-5 text-[#8458b3]" />
+
+              <input
+                type="password"
+                name="password"
+                placeholder="Enter your password"
+                className="w-full bg-transparent outline-none text-gray-700"
+                value={formData.password}
+                onChange={handleChange}
+                autoComplete="new-password"
+                required
+              />
+
+            </div>
+
+          </div>
+
+          {/* LOGIN BUTTON */}
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full h-14 rounded-2xl bg-gradient-to-r from-[#8458b3] to-purple-600 text-white font-bold text-lg shadow-xl hover:scale-[1.02] hover:shadow-2xl transition-all duration-300 disabled:opacity-50"
           >
-            Signup
-          </Link>
-        </p>
+            {loading
+              ? "Logging in..."
+              : "Login"}
+          </button>
 
-      </form>
+          {/* SIGNUP */}
+          <p className="text-center text-sm text-gray-500 mt-6">
+
+            Don't have an account?{" "}
+
+            <Link
+              to="/signup"
+              className="font-bold text-[#8458b3] hover:underline"
+            >
+              Create Account
+            </Link>
+
+          </p>
+
+        </form>
+
+      </div>
+
     </div>
   );
 };
