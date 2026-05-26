@@ -5,8 +5,9 @@ export const getImageUrl = (img) => {
     return img;
   }
 
-  const baseUrl =
-    import.meta.env.VITE_SERVER_URL || "http://localhost:4000";
+  const baseUrl = (
+    import.meta.env.VITE_SERVER_URL || "http://localhost:4000"
+  ).replace(/\/+$/, "");
 
   return `${baseUrl}${img.startsWith("/") ? img : `/${img}`}`;
 };
